@@ -28,7 +28,11 @@ namespace DapperProject
                 //ExecuteReadProcedure(connection);
                 //ReadView(connection);
                 //OneToOne(connection);
-                OneToMany(connection);
+                //OneToMany(connection);
+                //QueryMultiple(connection);
+                // SelectIn(connection);
+                //Like(connection);
+                Transaction(connection);
             }
         }
         static void ListCategories(SqlConnection connection)
@@ -40,7 +44,6 @@ namespace DapperProject
                 Console.WriteLine($"{item.Id} - {item.Title}");
             }
         }
-
         static void CreateCategory(SqlConnection connection)
         {
             var category = new Category();
@@ -73,7 +76,6 @@ namespace DapperProject
             });
             Console.WriteLine($"{rows}Linhas Inseridas");
         }
-
         static void UpdateCategory(SqlConnection connection)
         {
             var updateQuery = @"UPDATE [Category]
@@ -81,24 +83,22 @@ namespace DapperProject
                                 WhHERE [Id] = @id";
             var rows = connection.Execute(updateQuery, new
             {
-                id = new Guid(""),
+                id = new Guid("af3407aa-11ae-4621-a2ef-2028b85507c4"),
                 Title = "Frontend 2021"
             });
             Console.WriteLine($"{rows} Registros Atualizados");
 
         }
-
         static void DeleteCategory(SqlConnection connection)
         {
             var updateQuery = @"DELETE [Category]
                                 WhHERE [Id] = @id";
             var rows = connection.Execute(updateQuery, new
             {
-                id = new Guid(""),
+                id = new Guid("af3407aa-11ae-4621-a2ef-2028b85507c4"),
             });
             Console.WriteLine($"{rows} Registros Deletados");
         }
-
         static void CreateManyCategory(SqlConnection connection)
         {
             var category = new Category();
@@ -150,7 +150,6 @@ namespace DapperProject
             }});
             Console.WriteLine($"{rows}Linhas Inseridas");
         }
-
         static void ExecuteProcedure(SqlConnection connection)
         {
             var procedure = "spDeleteStudent";
@@ -208,7 +207,6 @@ namespace DapperProject
             });
             Console.WriteLine($"O id inserido foi: {id}");
         }
-
         static void ReadView(SqlConnection connection)
         {
             var view = "SELECT * FROM [vmCourses]";
@@ -243,7 +241,6 @@ namespace DapperProject
 
             }
         }
-
         static void OneToMany(SqlConnection connection)
         {
             var sql = @"
@@ -283,6 +280,96 @@ namespace DapperProject
                 {
                     Console.WriteLine($"- {item.Title}");
                 }
+            }
+        }
+        static void QueryMultiple(SqlConnection connection)
+        {
+            var sql = @"SELECT * FROM Category; SELECT * FROM Course";
+
+            using (var multi = connection.QueryMultiple(sql))
+            {
+                var categories = multi.Read<Category>();
+                var course = multi.Read<Course>();
+
+                foreach (var item in categories)
+                {
+                    Console.WriteLine(item.Title);
+                }
+                foreach (var item in course)
+                {
+                    Console.WriteLine(item.Title);
+                }
+            }
+        }
+        static void SelectIn(SqlConnection connection)
+        {
+            // var sql = @"SELECT * FROM Career WHERE Id IN (
+            //             '01ae8a85-b4e8-4194-a0f1-1c6190af54cb',
+            //             'e6730d1c-6870-4df3-ae68-438624e04c72')";
+
+            var sql = "SELECT * FROM Career WHERE Id IN @Id";
+            var items = connection.Query<Career>(sql, new
+            {
+                Id = new[]{
+                    "01ae8a85-b4e8-4194-a0f1-1c6190af54cb",
+                    "e6730d1c-6870-4df3-ae68-438624e04c72"}
+            });
+
+            foreach (var item in items)
+            {
+                Console.WriteLine(item.Title);
+            }
+        }
+        static void Like(SqlConnection connection)
+        {
+            var term = "api";
+            var sql = @"SELECT * FROM Course WHERE Title LIKE @exp";
+
+            var items = connection.Query<Course>(sql, new
+            {
+                exp = $"%{term}%"
+            });
+            foreach (var item in items)
+            {
+                Console.WriteLine(item.Title);
+            }
+        }
+        static void Transaction(SqlConnection connection)
+        {
+            var category = new Category();
+            category.Id = Guid.NewGuid();
+            category.Title = "TESTE NÃO SALVAR";
+            category.Summary = "TESTE NÃO SALVAR";
+            category.Url = "TESTE NÃO SALVAR";
+            category.Description = "Categoria FAKE";
+            category.Order = 8;
+            category.Featured = false;
+
+            var insertSQL = @"INSERT INTO [Category] 
+                        VALUES(
+                            NEWID(), 
+                            @Title, 
+                            @Url, 
+                            @Summary, 
+                            @Order, 
+                            @Description, 
+                            @Featured)";
+            connection.Open();
+            using (var transaction = connection.BeginTransaction())
+            {
+                var rows = connection.Execute(insertSQL, new
+                {
+                    category.Id,
+                    category.Title,
+                    category.Url,
+                    category.Summary,
+                    category.Order,
+                    category.Description,
+                    category.Featured
+                }, transaction);
+                //transaction.Commit();
+                transaction.Rollback();
+                Console.WriteLine($"{rows}Linhas Inseridas");
             }
         }
 
