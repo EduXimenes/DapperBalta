@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Cursos\\Balta\\DapperNet5\\DapperProject\\DapperProject.csproj": {}
+    "C:\\Cursos\\Balta\\DapperNet5\\DapperProject\\DapperProject.csproj": {}
   },
   "projects": {
-    "c:\\Cursos\\Balta\\DapperNet5\\DapperProject\\DapperProject.csproj": {
+    "C:\\Cursos\\Balta\\DapperNet5\\DapperProject\\DapperProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Cursos\\Balta\\DapperNet5\\DapperProject\\DapperProject.csproj",
+        "projectUniqueName": "C:\\Cursos\\Balta\\DapperNet5\\DapperProject\\DapperProject.csproj",
         "projectName": "DapperProject",
-        "projectPath": "c:\\Cursos\\Balta\\DapperNet5\\DapperProject\\DapperProject.csproj",
+        "projectPath": "C:\\Cursos\\Balta\\DapperNet5\\DapperProject\\DapperProject.csproj",
         "packagesPath": "C:\\Users\\exime\\.nuget\\packages\\",
-        "outputPath": "c:\\Cursos\\Balta\\DapperNet5\\DapperProject\\obj\\",
+        "outputPath": "C:\\Cursos\\Balta\\DapperNet5\\DapperProject\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\exime\\AppData\\Roaming\\NuGet\\NuGet.Config",

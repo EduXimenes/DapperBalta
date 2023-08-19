@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/diCRAopgTasGDZogN4WFr1/fa/d6FSXApHaPKAR0bj6wk/jTERn40FIwCCgMtv6f26ticYEKsy4nOrjzO+I0A==",
+  "dgSpecHash": "eXsIdtBy9e+yCDG012gjLXPCx4/i1DhNCEVF47XhQ7Kxp0MmL2O+USSzgsyyihXZETcIT/JBtA0zZnZu5OuzRQ==",
   "success": true,
-  "projectFilePath": "c:\\Cursos\\Balta\\DapperNet5\\DapperProject\\DapperProject.csproj",
+  "projectFilePath": "C:\\Cursos\\Balta\\DapperNet5\\DapperProject\\DapperProject.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\exime\\.nuget\\packages\\dapper\\2.0.90\\dapper.2.0.90.nupkg.sha512",
     "C:\\Users\\exime\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",

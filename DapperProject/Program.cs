@@ -3,6 +3,8 @@ using System;
 using Dapper;
 using DapperProject.Models;
 using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DapperProject
 {
@@ -22,10 +24,11 @@ namespace DapperProject
                 //DeleteCategory(connection);
                 //CreateManyCategory(connection);
                 //ExecuteProcedure(connection);
-                // ExecuteScalar(connection);
-                // ExecuteReadProcedure(connection);
-                // ReadView(connection);
-
+                //ExecuteScalar(connection);
+                //ExecuteReadProcedure(connection);
+                //ReadView(connection);
+                //OneToOne(connection);
+                OneToMany(connection);
             }
         }
         static void ListCategories(SqlConnection connection)
@@ -213,6 +216,73 @@ namespace DapperProject
             foreach (var item in courses)
             {
                 Console.WriteLine($"{item.Id} - {item.Title}");
+            }
+        }
+        static void OneToOne(SqlConnection connection)
+        {
+            var sql = @"
+                SELECT 
+                    * 
+                FROM 
+                    CareerItem
+                INNER JOIN 
+                    Course
+                ON CareerItem.CourseId = Course.Id";
+            //Query com 3 parâmetros -> Estou pegando o CareerItem e o Course e apontando que o resultado vai ser um CareerItem
+            var items = connection.Query<CareerItem, Course, CareerItem>(
+                sql,
+                (careerItem, course) =>
+                {
+                    careerItem.Course = course;
+                    return careerItem;
+                }, splitOn: "Id");
+            // Como o resultado do select é uma junção do careerItem com Course, a separação é feita pela coluna ID
+            foreach (var item in items)
+            {
+                Console.WriteLine($"{item.Title} - Curso: {item.Course.Title}");
+
+            }
+        }
+
+        static void OneToMany(SqlConnection connection)
+        {
+            var sql = @"
+                SELECT 
+                    * 
+                FROM 
+                    Career
+                INNER JOIN 
+                    CareerItem
+                ON CareerItem.CareerId = Career.Id
+                ORDER BY
+                    Career.title";
+            //Query com 3 parâmetros -> Estou pegando o CareerItem e o Course e apontando que o resultado vai ser um CareerItem
+            var careers = new List<Career>();
+            var items = connection.Query<Career, CareerItem, Career>(
+                sql,
+                (career, item) =>
+                {
+                    var car = careers.Where(x => x.Id == career.Id).FirstOrDefault();
+                    if (car == null)
+                    {
+                        car = career;
+                        car.Items.Add(item);
+                        careers.Add(car);
+                    }
+                    else
+                    {
+                        car.Items.Add(item);
+                    }
+                    return career;
+                }, splitOn: "CareerId");
+            // Como o resultado do select é uma junção do careerItem com Course, a separação é feita pela coluna ID
+            foreach (var career in careers)
+            {
+                Console.WriteLine($"{career.Title}");
+                foreach (var item in career.Items)
+                {
+                    Console.WriteLine($"- {item.Title}");
+                }
             }
         }
 
